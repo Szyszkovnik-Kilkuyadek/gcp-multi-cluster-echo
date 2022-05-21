@@ -26,26 +26,92 @@ gcloud services enable \
     multiclusteringress.googleapis.com \
     gkehub.googleapis.com \
     container.googleapis.com \
-    --project=project_id
+    --project={project_id}
 ```
 
-### Deploy GKE Cluster
+### Deploy GKE Autopilot Cluster
+
+Deploy two k8s clusters in different regions in specified GoogleCloud project:
 
 ```sh
 gcloud container clusters create-auto echo-au \
     --region=australia-southeast2 \
-    --workload-pool=project_id.svc.id.goog \
     --release-channel=stable \
     --enable-private-nodes \
-    --project=project_id
+    --project={project_id}
 
-gcloud container clusters create-auto echo-au \
+gcloud container clusters create-auto echo-jp \
     --region=asia-northeast3 \
-    --workload-pool=project_id.svc.id.goog \
     --release-channel=stable \
     --enable-private-nodes \
-    --project=project_id
+    --project={project_id}
 ```
+
+### Get credentials to kubectl configs
+
+Setup kubectl client context configs for specified clusters:
+
+```sh 
+gcloud container clusters get-credentials echo-au \
+    --region=australia-southeast2 \
+    --project={project_id}
+
+gcloud container clusters get-credentials echo-jp \
+    --region=asia-northeast3 \
+    --project={project_id}
+```
+
+### Register clusters to a fleet
+
+```sh
+gcloud container hub memberships register echo-au \
+    --gke-cluster australia-southeast2/echo-au \
+    --enable-workload-identity \
+    --project={project_id}
+
+gcloud container hub memberships register echo-jp \
+    --gke-cluster asia-northeast3/echo-jp \
+    --enable-workload-identity \
+    --project={project_id}
+```
+
+### List registered clusters
+
+```sh
+gcloud container hub memberships list --project={project_id}
+```
+
+### Specify a config cluster
+
+https://cloud.google.com/kubernetes-engine/docs/how-to/multi-cluster-ingress-setup#specifying_a_config_cluster
+
+
+```sh
+gcloud beta container hub ingress enable \
+   --config-membership=echo-au
+```
+
+### Describe multi-cluster ingress
+
+```sh
+gcloud beta container hub ingress describe
+```
+
+### Configure Docker credentials for Artifact Registry
+
+```sh
+gcloud auth configure-docker \
+    australia-southeast2-docker.pkg.dev
+```
+
+### Push images to Artifact Registry
+
+```sh
+docker pull ealen/echo-server
+docker tag ealen/echo-server australia-southeast2-docker.pkg.dev/{project_id}/docker-registry/ealen/echo-server
+docker push australia-southeast2-docker.pkg.dev/{project_id}/docker-registry/ealen/echo-server
+```
+## TODO: Configure image repository
 
 ### Create public cluster with default parameters:
 

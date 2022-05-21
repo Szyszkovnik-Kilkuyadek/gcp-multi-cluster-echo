@@ -29,7 +29,7 @@ spec:
         app: echo-server
     spec:
       containers:
-        - image: ealen/echo-server
+        - image: australia-southeast2-docker.pkg.dev/deft-duality-350018/docker-registry/ealen/echo-server
           name: echo-container
           resources:
             requests:
@@ -70,10 +70,13 @@ spec:
   template:
     spec:
       backend:
-        serviceName: default-backend
+        serviceName: echo-service
         servicePort: 80
       rules:
-        - path: /
-          backend:
-            serviceName: echo-service
-            servicePort: 80
+        - host: echo.chaoscross.xyz
+          http:
+            paths:
+              - backend:
+                  serviceName: echo-service
+                  servicePort: 80
+                path: /
