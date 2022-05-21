@@ -37,6 +37,8 @@ spec:
                     operator: In
                     values:
                       - europe-west6-a
+                      - europe-west6-b
+                      - europe-west6-c
               # - matchExpressions:
               #     - key: topology.kubernetes.io/zone
               #       operator: In
