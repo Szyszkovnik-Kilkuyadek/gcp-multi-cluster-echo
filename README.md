@@ -1,8 +1,53 @@
-# Google Cloud Platform multi-zone deployment of 'echo server'
+# Google Cloud Platform multi-cluster deployment of 'echo server'
 
-## Create GKE Autopilot cluster
+## Create GKE Autopilot multi-cluster
 
-### public cluster default parameters:
+[Multi-cluster Ingress setup](https://cloud.google.com/kubernetes-engine/docs/how-to/multi-cluster-ingress-setup)
+
+[Multi-cluster Services](https://cloud.google.com/kubernetes-engine/docs/concepts/multi-cluster-services)
+
+### Enable services neccessary for Multi Cluster Ingress
+
+with Anthos
+
+```sh
+gcloud services enable \
+    anthos.googleapis.com \
+    multiclusteringress.googleapis.com \
+    gkehub.googleapis.com \
+    container.googleapis.com \
+    --project=project_id
+```
+
+standalone (without Anthos)
+
+```sh
+gcloud services enable \
+    multiclusteringress.googleapis.com \
+    gkehub.googleapis.com \
+    container.googleapis.com \
+    --project=project_id
+```
+
+### Deploy GKE Cluster
+
+```sh
+gcloud container clusters create-auto echo-au \
+    --region=australia-southeast2 \
+    --workload-pool=project_id.svc.id.goog \
+    --release-channel=stable \
+    --enable-private-nodes \
+    --project=project_id
+
+gcloud container clusters create-auto echo-au \
+    --region=asia-northeast3 \
+    --workload-pool=project_id.svc.id.goog \
+    --release-channel=stable \
+    --enable-private-nodes \
+    --project=project_id
+```
+
+### Create public cluster with default parameters:
 
 ```sh
 gcloud container clusters create-auto "autopilot-cluster-1" --project "{project-id}" \
@@ -14,7 +59,7 @@ gcloud container clusters create-auto "autopilot-cluster-1" --project "{project-
 --services-ipv4-cidr "/22"
 ```
 
-### public cluster with security group:
+### Create public cluster with security group:
 
 ```sh
 gcloud container clusters create-auto "autopilot-cluster-1" --project "{project-id}" \
@@ -27,7 +72,7 @@ gcloud container clusters create-auto "autopilot-cluster-1" --project "{project-
 --security-group "gke-security-groups@{group-name}"
 ```
 
-### private cluster:
+### Create private cluster:
 
 ```sh
 gcloud container clusters create-auto "autopilot-cluster-1" \
@@ -69,9 +114,3 @@ gcloud container clusters get-credentials CLUSTER_NAME \
 ```sh
 kubectl delete all --all -n {namespace}
 ```
-
-## Create Load Balancer to support multi-region
-
-[Google Cload: How to create Load Balancer](https://cloud.google.com/run/docs/multiple-regions#create-lb)
-
-[Multi-cluster Services](https://cloud.google.com/kubernetes-engine/docs/concepts/multi-cluster-services)
