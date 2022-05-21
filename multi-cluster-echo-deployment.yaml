@@ -1,0 +1,37 @@
+apiVersion: networking.gke.io/v1
+kind: MultiClusterService
+metadata:
+  name: foo
+  namespace: blue
+spec:
+  template:
+    spec:
+      selector:
+        app: foo
+      ports:
+      - name: web
+        protocol: TCP
+        port: 80
+        targetPort: 80
+
+--- 
+apiVersion: networking.gke.io/v1
+kind: MultiClusterIngress
+metadata:
+  name: foobar-ingress
+  namespace: blue
+spec:
+  template:
+    spec:
+      backend:
+        serviceName: default-backend
+        servicePort: 80
+      rules:
+      - host: foo.example.com
+        backend:
+          serviceName: foo
+          servicePort: 80
+      - host: bar.example.com
+        backend:
+          serviceName: bar
+          servicePort: 80       
