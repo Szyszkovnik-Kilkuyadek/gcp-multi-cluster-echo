@@ -113,6 +113,8 @@ docker push australia-southeast2-docker.pkg.dev/{project_id}/docker-registry/eal
 ```
 ## TODO: Configure image repository
 
+## Useful commands
+
 ### Create public cluster with default parameters:
 
 ```sh
@@ -151,7 +153,7 @@ gcloud container clusters create-auto "autopilot-cluster-1" \
 --enable-private-nodes
 ```
 
-### network routing setup:
+### Network routing setup:
 
 ```sh
 gcloud compute routers create {NAT_ROUTER} \
@@ -167,7 +169,7 @@ gcloud compute routers nats create NAT_CONFIG \
 --project=PROJECT_ID
 ```
 
-### get cluster credentials to connect cluster
+### Get cluster credentials to connect cluster
 
 ```sh
 gcloud container clusters get-credentials CLUSTER_NAME \
