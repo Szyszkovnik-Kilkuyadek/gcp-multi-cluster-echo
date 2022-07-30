@@ -16,7 +16,7 @@ gcloud services enable \
     multiclusteringress.googleapis.com \
     gkehub.googleapis.com \
     container.googleapis.com \
-    --project=project_id
+    --project={project_id}
 ```
 
 standalone (without Anthos)
