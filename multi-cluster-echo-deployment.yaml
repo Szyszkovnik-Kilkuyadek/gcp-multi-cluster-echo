@@ -29,7 +29,7 @@ spec:
         app: echo-server
     spec:
       containers:
-        - image: australia-southeast2-docker.pkg.dev/deft-duality-350018/docker-registry/ealen/echo-server
+        - image: australia-southeast2-docker.pkg.dev/{project-id}/docker-registry/ealen/echo-server
           name: echo-container
           resources:
             requests:
